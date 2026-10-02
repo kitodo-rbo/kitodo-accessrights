@@ -1,0 +1,41 @@
+{
+    "name": "kitodo/accessrights",
+    "description": "Kitodo.AccessRights Description",
+    "type": "typo3-cms-extension",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+        "name": "Kitodo. Key to digital objects e.V.",
+        "email": "contact@kitodo.org",
+        "homepage": "https://www.kitodo.org",
+        "role": "provider"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/kitodo-rbo/kitodo-accessrights/issues",
+        "source": "https://github.com/kitodo-rbo/kitodo-accessrights",
+        "docs": "https://docs.typo3.org/p/kitodo/accessrights/main/en-us/"
+    },
+    "require": {
+        "php": "8.2 - 8.4",
+        "typo3/cms-core": "^13.4",
+        "kitodo/presentation": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kitodo\\Dlf\\Pdp\\": "Classes/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "dlf_pdp"
+        }
+    }
+}

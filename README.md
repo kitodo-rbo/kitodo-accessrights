@@ -1,0 +1,3 @@
+# Kitodo.AccessRights
+
+Description
