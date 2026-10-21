@@ -2,7 +2,7 @@
     "name": "kitodo/accessrights",
     "description": "Kitodo.AccessRights Description",
     "type": "typo3-cms-extension",
-    "license": "GPL-2.0-or-later",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
         "name": "Kitodo. Key to digital objects e.V.",
