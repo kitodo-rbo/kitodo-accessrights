@@ -19,7 +19,7 @@ final class LibRmlDetectedListener
     public function __invoke(LibRmlDetectedEvent $event): void
     {
         $this->pdpService->processLibRml(
-            $event->getMetadataId(),
+            $event->getMdId(),
             $event->getLibRmlXml(),
         );
     }
