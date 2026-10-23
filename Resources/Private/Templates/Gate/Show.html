@@ -1,0 +1,92 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<f:comment>
+    Presentation only. The decision was made by the PDP; this template never evaluates rights.
+    Inputs: state, hints[{type, values[]}], returnUrl (already sanitized), loginPageUid, currentLocation
+</f:comment>
+
+<div class="dlf-pdp-gate dlf-pdp-gate--{state}" role="region" aria-live="polite">
+    <f:switch expression="{state}">
+
+        <f:case value="permit">
+            <h2>Access granted</h2>
+            <f:if condition="{returnUrl}">
+                <p><f:link.external uri="{returnUrl}" class="btn btn-primary">Open the document</f:link.external></p>
+            </f:if>
+        </f:case>
+
+        <f:case value="login_required">
+            <h2>Please log in to view this document</h2>
+            <p>This document is not freely available. Access is possible if one of the following applies (each line lists everything that is needed together):</p>
+            <f:render section="Hints" arguments="{hints: hints}" />
+            <f:if condition="{loginPageUid}">
+                <p>
+                    <f:link.page pageUid="{loginPageUid}"
+                                 additionalParams="{redirect_url: returnUrl}"
+                                 class="btn btn-primary">Log in</f:link.page>
+                </p>
+            </f:if>
+        </f:case>
+
+        <f:case value="elevation_required">
+            <h2>Your account does not grant access to this document</h2>
+            <p>You are logged in, but none of the conditions for access is met. Access is possible if one of the following applies (each line lists everything that is needed together):</p>
+            <f:render section="Hints" arguments="{hints: hints}" />
+            <f:if condition="{currentLocation}">
+                <p><small>Your current access context: <strong>{currentLocation}</strong></small></p>
+            </f:if>
+        </f:case>
+
+        <f:defaultCase>
+            <f:comment>"denied", and anything unexpected: fail closed with the least information</f:comment>
+            <h2>This document is not available online</h2>
+            <p>For questions about access, please contact the library.</p>
+        </f:defaultCase>
+
+    </f:switch>
+</div>
+
+<f:section name="Hints">
+    <ul class="dlf-pdp-gate__hints">
+        <f:for each="{hints}" as="alternative">
+            <li>
+                <f:for each="{alternative}" as="hint" iteration="h">
+                    <f:render section="Requirement" arguments="{hint: hint}" />
+                    <f:if condition="!{h.isLast}"> <strong>and</strong> </f:if>
+                </f:for>
+            </li>
+        </f:for>
+    </ul>
+</f:section>
+
+<f:section name="Requirement">
+    <f:switch expression="{hint.type}">
+
+        <f:case value="group">
+            <f:for each="{hint.values}" as="group" iteration="i">
+                <f:if condition="{group} == 'registered'">
+                    <f:then>you are logged in with a library account</f:then>
+                    <f:else>you belong to the group “{group}”</f:else>
+                </f:if>
+                <f:if condition="!{i.isLast}"> or </f:if>
+            </f:for>
+        </f:case>
+
+        <f:case value="location">
+            <f:for each="{hint.values}" as="location" iteration="i">
+                <f:switch expression="{location}">
+                    <f:case value="lesesaal">you are using the reading room</f:case>
+                    <f:case value="homeoffice">you are working from a home office</f:case>
+                    <f:case value="online">you are accessing from the online context</f:case>
+                    <f:defaultCase>your access location is “{location}”</f:defaultCase>
+                </f:switch>
+                <f:if condition="!{i.isLast}"> or </f:if>
+            </f:for>
+        </f:case>
+
+        <f:defaultCase>this document has a restriction that this system cannot evaluate</f:defaultCase>
+
+    </f:switch>
+</f:section>
+
+</html>

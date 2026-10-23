@@ -1,0 +1,5 @@
+name: kitodo/accessrights
+label: Kitodo Access Rights
+dependencies:
+  - causal/oidc
+  

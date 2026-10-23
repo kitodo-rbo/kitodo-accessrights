@@ -6,5 +6,4 @@ services:
 
   Kitodo\Dlf\Pdp\:
     resource: '../Classes/*'
-    exclude:
-      - '../Classes/Domain/Model/*'
+    exclude: '../Classes/Domain/Model/*'
