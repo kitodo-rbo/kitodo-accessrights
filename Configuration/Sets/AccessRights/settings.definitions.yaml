@@ -9,3 +9,8 @@ settings:
     description: 'Page that contains the causal/oidc login plugin'
     type: int
     default: 10
+  dlfPdp.deniedPid:
+    label: Access info page
+    description: Page containing the "Gate" plugin. Users without access are redirected here.
+    type: int
+    default: 9

@@ -4,9 +4,9 @@
     Presentation only. The decision was made by the PDP; this template never evaluates rights.
     Inputs: state, hints[{type, values[]}], returnUrl (already sanitized), loginPageUid, currentLocation
 </f:comment>
-
+<f:debug>{_all}</f:debug>
 <div class="dlf-pdp-gate dlf-pdp-gate--{state}" role="region" aria-live="polite">
-    <f:switch expression="{state}">
+    <f:switch expression="{verdict.value}">
 
         <f:case value="permit">
             <h2>Access granted</h2>

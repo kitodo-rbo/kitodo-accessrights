@@ -13,28 +13,32 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final class GateController extends ActionController
 {
     public function __construct(
-        private readonly AccessRightsReader $rights,
-        private readonly PolicyDecisionService $pdp,
+        private readonly AccessRightsReader $rightsReader,
+        private readonly PolicyDecisionService $policyDecisionService,
     ) {}
+    
+    public function deniedAction(int $document = 0, string $returnUrl = ''): ResponseInterface
+    {
+        // Never trust the URL: decide again, exactly like the gate did
+        $rights = $this->rightsReader->findRightsByDocumentUid($document);
+        $subject = AccessSubject::fromFeUserRow($this->request->getAttribute('frontend.user')?->user ?: null);
+        $verdict = $rights === null ? null : $this->policyDecisionService->decide($rights, $subject, 'read');
 
-    public function showAction(int $document, string $returnUrl = ''): ResponseInterface
-{
-    $librml = $this->rights->findRightsByDocumentUid($document);
-    $subject = AccessSubject::fromFeUserRow($this->request->getAttribute('frontend.user')?->user ?: null);
-    $state = $librml === null
-        ? 'denied' // the gate was called for a document that doesn't exist
-        : $this->pdp->decide($librml, $subject, 'read')->decision->value;
-    $hints = $librml === null ? [] : $this->pdp->decide($librml, $subject, 'read')->hints;
+        // Comes from the query string: local URLs only
+        $returnUrl = GeneralUtility::sanitizeLocalUrl($returnUrl);
 
-    $site = $this->request->getAttribute('site');
+        // Allowed after all (e.g. just logged in): straight back to the object
+        if (($verdict === null || $verdict->isPermitted()) && $returnUrl !== '') {
+            return $this->redirectToUri($returnUrl);
+        }
 
-    $this->view->assignMultiple([
-        'state' => $state,   // permit | login_required | elevation_required | denied
-        'hints' => $hints,
-        'returnUrl' => GeneralUtility::sanitizeLocalUrl($returnUrl),
-        'loginPageUid' => (int)($site->getSettings()->get('dlfPdp.loginPageUid') ?? 0),
-        'currentLocation' => $subject->location,
-    ]);
-    return $this->htmlResponse();
-}
+        $this->view->assignMultiple([
+            'verdict' => $verdict?->decision,
+            'hints' => $verdict?->hints ?? [],
+            'returnUrl' => $returnUrl,
+            'loginPageUid' => (int)$this->request->getAttribute('site')->getSettings()->get('dlfPdp.loginPid', 0),
+        ]);
+
+        return $this->htmlResponse();
+    }
 }
