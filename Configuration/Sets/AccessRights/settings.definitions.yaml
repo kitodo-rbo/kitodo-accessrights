@@ -4,7 +4,7 @@ settings:
     description: 'Page that contains the dlf_pdp gate plugin'
     type: int
     default: 9
-  dlfPdp.loginPageUid:
+  dlfPdp.loginPid:
     label: 'Login page'
     description: 'Page that contains the causal/oidc login plugin'
     type: int
