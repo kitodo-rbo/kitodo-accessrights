@@ -11,13 +11,14 @@ final readonly class AccessSubject
     /** @param string[] $affiliations */
     public function __construct(
         public bool $authenticated,
+        public int $uid,
         public array $affiliations = [],
         public ?string $location = null,
     ) {}
 
     public static function anonymous(): self
     {
-        return new self(false);
+        return new self(false, -1);
     }
 
     /** @param array<string,mixed>|null $feUserRow */
@@ -26,9 +27,10 @@ final readonly class AccessSubject
         if (!$feUserRow || empty($feUserRow['uid'])) {
             return self::anonymous();
         }
+        $uid = $feUserRow['uid'];
         $affiliations = preg_split('/[,\s]+/', strtolower((string)($feUserRow[self::COLUMN_AFFILIATION] ?? '')), -1, PREG_SPLIT_NO_EMPTY);
         $location = strtolower(trim((string)($feUserRow[self::COLUMN_LOCATION] ?? '')));
-        return new self(true, $affiliations, $location !== '' ? $location : null);
+        return new self(true, $uid, $affiliations, $location !== '' ? $location : null);
     }
 
     /** Assumption 1 + 2: every logged-in user is "registered", affiliations count as groups. */

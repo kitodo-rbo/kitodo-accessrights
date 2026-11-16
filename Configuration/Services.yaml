@@ -7,3 +7,15 @@ services:
   Kitodo\Dlf\Pdp\:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Model/*'
+
+  Kitodo\Dlf\Pdp\Service\BrowserTokenInjector:
+    arguments:
+      $imageServerOrigin: '%env(default::DLF_IMAGE_SERVER_ORIGIN)%'
+  
+  Kitodo\Dlf\Pdp\Service\TokenService:
+    arguments:
+      $hmacSecret: '%env(DLF_JWT_SECRET)%'
+
+  Kitodo\Dlf\Pdp\Service\PolicyDecisionService:
+    arguments:
+      $restrictedPathTemplate: '/files/%d/'

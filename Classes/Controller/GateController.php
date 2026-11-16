@@ -17,12 +17,12 @@ final class GateController extends ActionController
         private readonly PolicyDecisionService $policyDecisionService,
     ) {}
     
-    public function deniedAction(int $document = 0, string $returnUrl = ''): ResponseInterface
+    public function deniedAction(int $documentId = 0, string $returnUrl = ''): ResponseInterface
     {
         // Never trust the URL: decide again, exactly like the gate did
-        $rights = $this->rightsReader->findRightsByDocumentUid($document);
+        $rights = $this->rightsReader->findRightsByDocumentUid($documentId);
         $subject = AccessSubject::fromFeUserRow($this->request->getAttribute('frontend.user')?->user ?: null);
-        $verdict = $rights === null ? null : $this->policyDecisionService->decide($rights, $subject, 'read');
+        $verdict = $rights === null ? null : $this->policyDecisionService->decide($rights, $subject, ['read'], $documentId);
 
         // Comes from the query string: local URLs only
         $returnUrl = GeneralUtility::sanitizeLocalUrl($returnUrl);

@@ -14,17 +14,17 @@ final readonly class ActionRule
     }
 
     public function isSatisfiedBy(AccessSubject $subject): bool
-{
-    if (!$this->permission) {
-        return false;
-    }
-    foreach ($this->restrictions as $restriction) {
-        if (!$restriction->isSatisfiedBy($subject)) {
-            return false; // AND: one unmet restriction is enough to fail
+    {
+        if (!$this->permission) {
+            return false;
         }
+        foreach ($this->restrictions as $restriction) {
+            if (!$restriction->isSatisfiedBy($subject)) {
+                return false; // AND: one unmet restriction is enough to fail
+            }
+        }
+        return true; // also true for "no restrictions" = public
     }
-    return true; // also true for "no restrictions" = public
-}
 
     /** @return Restriction[] */
     public function unmetRestrictions(AccessSubject $subject): array

@@ -15,7 +15,7 @@ final class LibRmlParser
     /**
      * @return ActionRule[]|null null = no rights description at all (blank input)
      */
-    public function rulesFor(string $xml, string $actionType): ?array
+    public function rulesFor(string $xml, array $actionTypes): ?array
     {
         // Leading whitespace before <?xml makes the document invalid; pasted text often has it
         $xml = trim($xml);
@@ -39,24 +39,27 @@ final class LibRmlParser
         $xpath->registerNamespace('l', self::NS);
 
         $rules = [];
-        // If the namespace is wrong this finds nothing -> empty list -> PDP says Denied (fail closed)
-        foreach ($xpath->query('/l:libRML/l:item/l:action') as $action) {
-            /** @var \DOMElement $action */
-            if ($action->getAttribute('type') !== $actionType) {
-                continue; // compare in PHP rather than building XPath from strings
+        foreach($actionTypes as $actionType)
+        {
+            // If the namespace is wrong this finds nothing -> empty list -> PDP says Denied (fail closed)
+            foreach ($xpath->query('/l:libRML/l:item/l:action') as $action) {
+                /** @var \DOMElement $action */
+                if ($action->getAttribute('type') !== $actionType) {
+                    continue; // compare in PHP rather than building XPath from strings
+                }
+                $restrictions = [];
+                foreach ($xpath->query('l:restriction', $action) as $restriction) {
+                    /** @var \DOMElement $restriction */
+                    $type = strtolower($restriction->getAttribute('type'));
+                    $attribute = $type === 'location' ? 'locations' : 'groups';
+                    $values = preg_split('/[,\s]+/', strtolower($restriction->getAttribute($attribute)), -1, PREG_SPLIT_NO_EMPTY);
+                    $restrictions[] = new Restriction($type, $values);
+                }
+                $rules[$actionType][] = new ActionRule(
+                    strtolower($action->getAttribute('permission')) === 'true',
+                    $restrictions,
+                );
             }
-            $restrictions = [];
-            foreach ($xpath->query('l:restriction', $action) as $restriction) {
-                /** @var \DOMElement $restriction */
-                $type = strtolower($restriction->getAttribute('type'));
-                $attribute = $type === 'location' ? 'locations' : 'groups';
-                $values = preg_split('/[,\s]+/', strtolower($restriction->getAttribute($attribute)), -1, PREG_SPLIT_NO_EMPTY);
-                $restrictions[] = new Restriction($type, $values);
-            }
-            $rules[] = new ActionRule(
-                strtolower($action->getAttribute('permission')) === 'true',
-                $restrictions,
-            );
         }
         return $rules;
     }
