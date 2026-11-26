@@ -2,7 +2,7 @@
     "name": "kitodo/accessrights",
     "description": "Kitodo.AccessRights Description",
     "type": "typo3-cms-extension",
-    "license": "GPL-2.0-or-later",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
         "name": "Kitodo. Key to digital objects e.V.",
@@ -17,9 +17,9 @@
         "docs": "https://docs.typo3.org/p/kitodo/accessrights/main/en-us/"
     },
     "require": {
-        "php": "8.2 - 8.4",
-        "typo3/cms-core": "^13.4",
-        "kitodo/presentation": "dev-main"
+        "php": "^8.4",
+        "typo3/cms-core": "^13.4.36",
+        "kitodo/presentation": "^7.0|dev-main"
     },
     "autoload": {
         "psr-4": {
