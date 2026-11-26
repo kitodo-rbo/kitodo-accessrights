@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="messages" product-name="dlf_pdp">
+        <header/>
+        <body>
+            <trans-unit id="fe_groups.tx_dlf_pdp_affiliation">
+                <source>Affiliations that automatically receive this group</source>
+            </trans-unit>
+            <trans-unit id="fe_groups.tx_dlf_pdp_affiliation.description">
+                <source>Controlled at every SSO login: members with a ticked affiliation get this group, everyone else loses it. Manual assignments of this group are overwritten.</source>
+            </trans-unit>
+            <trans-unit id="affiliation.student"><source>Student</source></trans-unit>
+            <trans-unit id="affiliation.professor"><source>Professor</source></trans-unit>
+            <trans-unit id="affiliation.staff"><source>Staff</source></trans-unit>
+            <trans-unit id="affiliation.libraryreader"><source>Library reader</source></trans-unit>
+        </body>
+    </file>
+</xliff>

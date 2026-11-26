@@ -1,0 +1,7 @@
+TCEFORM.fe_groups.tx_dlf_pdp_affiliation {
+    addItems {
+        faculty = Faculty
+        library-walk-in = Library walk-in user
+    }
+    removeItems = professor
+}
